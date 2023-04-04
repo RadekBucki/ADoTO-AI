@@ -4,11 +4,11 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def hello():
+def hello() -> str:
     return "HelloWorld"
 
 
 @app.route('/test1')
-def hello():
+def test() -> str:
     return "Example output"
 
