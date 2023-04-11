@@ -5,6 +5,7 @@ import cv2
 import json
 import numpy as np
 from typing import List, Dict
+from shapely.geometry import shape
 
 from InputDto import OnMapObject, Label, Picture
 
@@ -25,8 +26,13 @@ def compute_labels_for_pixels(picture_height: int, picture_width: int, objects: 
 
 # take Picture as an input, compute OnMapObjects (vectors) from Picture's pixels (raster)
 def compute_shapes_from_pixels(picture: Picture) -> List[OnMapObject]:
-    # TODO implement
-    return []
+    polygons: List[OnMapObject] = []
+    for vec, category_index in rasterio.features.shapes(picture.array):
+        label = Label(category_index)
+        # add detected meaningful objects
+        if label.is_meaningful():
+            polygons.append(OnMapObject(shape(vec), label))
+    return polygons
 
 
 def request_image(height: [[str]], width: [[str]], minx: [[str]], miny: [[str]], maxx: [[str]], maxy: [[str]],
