@@ -1,5 +1,6 @@
 from shapely.geometry import Polygon
 from enum import Enum
+from typing import List, Dict
 
 import functions
 
@@ -12,6 +13,12 @@ class Label(Enum):
     OTHER = 4
 
 
+class Picture:
+    def __init__(self, width: int, height: int):
+        self.width = width
+        self.height = height
+
+
 # represents object on the map, shape & its label
 class OnMapObject:
     def __init__(self, polygon: Polygon, label: Label):
@@ -19,8 +26,8 @@ class OnMapObject:
         self.label = label
 
 
-# represents satellite picture with object that it contains
+# represents satellite picture with all pixels having a number representing class of object
 class InputDto:
-    def __init__(self, picture: [[int]], objects: [OnMapObject]):
-        self.picture: [[int]] = picture
-        self.labels: [[Label]] = functions.compute_labels_for_pixels(picture=picture, objects=objects)
+    def __init__(self, picture: Picture, objects: Dict[Label, List[OnMapObject]]):
+        self.picture: Picture = picture
+        self.categories: List[List[Label]] = functions.compute_labels_for_pixels(picture.height, picture.width, objects)
