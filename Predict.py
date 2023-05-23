@@ -12,7 +12,7 @@ import base64
 import io
 
 
-def find_shapes(img_name, object_type):
+def find_shapes(img, object_type):
     try:
         config_path = Path('./config.file')
         load_dotenv(dotenv_path=config_path)
@@ -23,7 +23,7 @@ def find_shapes(img_name, object_type):
     # |            VARIABLES              /
     # +----------------------------------/
 
-    SIZE = int(os.environ.get(object_type.swapcase()+"_TRAIN_IMAGE_SIZE"))
+    SIZE = int(os.environ.get(object_type.swapcase() + "_TRAIN_IMAGE_SIZE"))
     filename = uuid.uuid4()
     object_vectors = []
 
@@ -32,15 +32,9 @@ def find_shapes(img_name, object_type):
     # +----------------------------------/
 
     images = np.zeros(shape=(1, SIZE, SIZE, 3))
-
-    # received_image = "Tutaj trzeba wrzucić zwrotke z backendu i przekonwertować obrazek"
-    # bytes_image =  base64.b64decode(received_image)
-    # img = np.asarray(Image.open(io.BytesIO(image_bytes))).astype('float')/255.
-
-    # Do lokalnego testowania
-    received_image = img_name
-    img = np.asarray(Image.open(received_image)).astype('float') / 255.
-
+    received_image = img
+    bytes_image = base64.b64decode(received_image)
+    img = np.asarray(Image.open(io.BytesIO(bytes_image))).astype('float') / 255.
     img = cv.resize(img, (SIZE, SIZE), cv.INTER_AREA)
     images[0] = img
 
@@ -48,10 +42,8 @@ def find_shapes(img_name, object_type):
     # |            LOAD MODEL             /
     # +----------------------------------/
 
-    # loaded_model = "Tutaj zwrotka z backendu też powinna mówić jaki model należy użyć"
 
-    # Do lokalnego testowania
-    loaded_model = load_model(f'Datasets/dataset_'+ object_type + '.h5')
+    loaded_model = load_model(f'Datasets/dataset_' + object_type + '.h5')
     prediction = loaded_model.predict(images)
 
     # +------------------------------------/
@@ -88,18 +80,15 @@ def find_shapes(img_name, object_type):
                 Y.append(int(point[0][1]))
             z = z + 1
         if len(X) >= 3:
-            object_points.update({'X ': X, 'Y': Y})
+            object_points.update({'X': X, 'Y': Y})
             object_vectors.append(object_points)
-    f.delete_image(filename)
-    return object_vectors
-
-
-# Do lokalnego testowania
-# def create_response(img_name):
-#     return json.dumps(prediction(img_name), indent=4)
-
-print(json.dumps(find_shapes("a.png", "house")))
 
 # +------------------------------------/
 # |           REMOVE PHOTO            /
 # +----------------------------------/
+    f.delete_image(filename)
+    return object_vectors
+
+
+def create_response(img, model):
+    return json.dumps(find_shapes(img, model),indent=2)
