@@ -1,9 +1,11 @@
+import flask
 import rasterio.features
 import requests
 import base64
 import cv2
 import json
 import numpy as np
+from prediction.house.prediction import create_response
 from typing import List, Dict
 from shapely.geometry import shape
 
@@ -35,10 +37,13 @@ def compute_shapes_from_pixels(picture: Picture) -> List[OnMapObject]:
     return polygons
 
 
-def request_image(height: [[str]], width: [[str]], minx: [[str]], miny: [[str]], maxx: [[str]], maxy: [[str]],
+def request_image( width: [[str]], minx: [[str]], miny: [[str]], maxx: [[str]], maxy: [[str]],
                   img_name: [[str]]):
-    params = {'height': height, 'width': width, 'minx': minx, 'miny': miny, 'maxx': maxx, 'maxy': maxy}
-    response = json.loads(requests.get('http://localhost:8080/satellite', params=params).content)
+    params = {'width': width, 'minx': minx, 'miny': miny, 'maxx': maxx, 'maxy': maxy}
+    response = json.loads(requests.get('http://localhost:8080/geoportal/satellite/epsg2180', params=params).content)
     image_array = np.frombuffer(base64.b64decode(response['base64']), dtype=np.uint8)
     image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
     cv2.imwrite(img_name, image)
+    return create_response(img_name)
+
+

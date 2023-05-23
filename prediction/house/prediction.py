@@ -1,10 +1,11 @@
 import numpy as np
 import torch
+import json
 from skimage import io
 from skimage.transform import resize
 
-from models.backbone import DetectionBranch, NonMaxSuppression, R2U_Net
-from models.matching import OptimalMatching
+from prediction.house.models.backbone import DetectionBranch, NonMaxSuppression, R2U_Net
+from prediction.house.models.matching import OptimalMatching
 
 
 def loadSample(name):
@@ -41,10 +42,10 @@ def bounding_box_from_points(X, Y):
 def single_annotation(poly):
     X, Y = split(poly)
     return {
-        "segmentation": poly,
+      #  "segmentation": poly,
         "X": X,
         "Y": Y,
-        "bbox": bounding_box_from_points(X, Y),
+     #  "bbox": bounding_box_from_points(X, Y),
     }
 
 
@@ -68,17 +69,17 @@ def load():
     print("Loading pretrained model")
     model.load_state_dict(
         torch.load(
-            "./trained_weights/polyworld_backbone", map_location=torch.device("cpu")
+            "./prediction/house/trained_weights/polyworld_backbone", map_location=torch.device("cpu")
         )
     )
     head_ver.load_state_dict(
         torch.load(
-            "./trained_weights/polyworld_seg_head", map_location=torch.device("cpu")
+            "./prediction/house/trained_weights/polyworld_seg_head", map_location=torch.device("cpu")
         )
     )
     matching.load_state_dict(
         torch.load(
-            "./trained_weights/polyworld_matching", map_location=torch.device("cpu")
+            "./prediction/house/trained_weights/polyworld_matching", map_location=torch.device("cpu")
         )
     )
 
@@ -95,12 +96,17 @@ def load():
         for i, pp in enumerate(poly):
             for p in pp:
                 predictions.append(single_annotation([p]))
-
             return predictions
-
     return predict
 
 
-predict = load()
+prediction = load()
+
+def create_response(img_name):
+    return json.dumps(prediction(img_name), indent=4)
+
 if __name__ == "__main__":
-    print(predict("0.png"))
+    jsonString = json.dumps(prediction("3.png"), indent=2)
+    print(create_response())
+
+

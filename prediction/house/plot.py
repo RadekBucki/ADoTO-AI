@@ -8,7 +8,7 @@ from PIL import Image
 import prediction as p
 
 fn = sys.argv[1]
-result = p.predict(fn)
+result = p.prediction(fn)
 img = np.asarray(Image.open(fn).resize((300, 300)))
 
 plt.imshow(img)

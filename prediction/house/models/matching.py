@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from copy import deepcopy
-from utils import scores_to_permutations, permutations_to_polygons
+from prediction.house.utils import scores_to_permutations, permutations_to_polygons
 
 
 def MultiLayerPerceptron(channels: list, batch_norm=True):
