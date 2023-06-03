@@ -1,17 +1,6 @@
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-
-try:
-    config_path = Path('./config.file')
-    load_dotenv(dotenv_path=config_path)
-except Exception as error:
-    exit()
-
-os.add_dll_directory(os.environ.get("CUDA_TOOLKIT_BIN"))
-os.add_dll_directory(os.environ.get("CUDA_TOOLKIT_LIB"))
-os.add_dll_directory(os.environ.get("CUDA_TOOLKIT_ZLIBWAPI"))
-
 import numpy as np
 import cv2 as cv
 from PIL import Image
@@ -20,6 +9,12 @@ import Func as f
 import uuid
 import base64
 import io
+
+try:
+    config_path = Path('./config.file')
+    load_dotenv(dotenv_path=config_path)
+except Exception as error:
+    exit()
 
 
 #+------------------------------------/
