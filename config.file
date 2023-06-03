@@ -1,0 +1,10 @@
+TRAIN_IMAGE_SIZE=256
+EPOCH_SIZE=200
+BATCH_SIZE=16
+MODEL_NAME=model
+IMAGE_PATH=
+MASK_PATH=
+POINT_ACC=2
+CUDA_TOOLKIT_BIN=C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/bin
+CUDA_TOOLKIT_LIB=C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/lib/x64
+CUDA_TOOLKIT_ZLIBWAPI=C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/dll_x64/zlibwapi.dll
