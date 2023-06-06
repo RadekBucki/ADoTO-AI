@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from dotenv import load_dotenv
 from pathlib import Path
+from PIL import Image
+
 import os
 
 try:
@@ -61,3 +63,26 @@ def delete_image(filename):
     file = f'{filename}.png'
     if os.path.exists(file):
         os.remove(file)
+
+def crop_photos_and_save(image_path, output_directory, crop_size, filename):
+    image = Image.open(image_path)
+    
+    width, height = image.size
+    
+    num_cols = width // crop_size
+    num_rows = height // crop_size
+    
+    for col in range(num_cols):
+        for row in range(num_rows):
+            left = col * crop_size
+            upper = row * crop_size
+            right = left + crop_size
+            lower = upper + crop_size
+            
+            cropped_image = image.crop((left, upper, right, lower))
+            output_path = f"{output_directory}/{filename}_{col}_{row}.jpg"
+            
+            if cropped_image.mode == "RGBA":
+                cropped_image = cropped_image.convert("RGB")
+
+            cropped_image.save(output_path, "JPEG")
