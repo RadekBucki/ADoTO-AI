@@ -36,4 +36,4 @@ def request_image(width: [[str]], minx: [[str]], miny: [[str]], maxx: [[str]], m
     params = {'width': width, 'minx': minx, 'miny': miny, 'maxx': maxx, 'maxy': maxy}
     # Note: Backend should send the picture automatically
     response = json.loads(requests.get('http://localhost:8080/geoportal/satellite/epsg2180', params=params).content)
-    return create_response(response['base64'], model)
+    return create_response(response['base64'], model, width)

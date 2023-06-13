@@ -12,7 +12,7 @@ import base64
 import io
 
 
-def find_shapes(img, object_type):
+def find_shapes(img, object_type, width):
     try:
         config_path = Path('./config.file')
         load_dotenv(dotenv_path=config_path)
@@ -42,7 +42,6 @@ def find_shapes(img, object_type):
     # |            LOAD MODEL             /
     # +----------------------------------/
 
-
     loaded_model = load_model(f'Datasets/dataset_' + object_type + '.h5')
     prediction = loaded_model.predict(images)
 
@@ -70,25 +69,25 @@ def find_shapes(img, object_type):
     contours, _ = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
     for i, contour in enumerate(contours):
-        object_points = {}
-        X = []
-        Y = []
+        object_points = []
         z = 0
         for point in contour:
+            single_point = {}
             if z % int(os.environ.get("POINT_ACC")) == 0:
-                X.append(int(point[0][0]))
-                Y.append(int(point[0][1]))
+                single_point.update({"x": float(point[0][0] * float(width)/SIZE),
+                                     "y": float(point[0][1] * float(width)/SIZE)})
+                object_points.append(single_point)
             z = z + 1
-        if len(X) >= 3:
-            object_points.update({'X': X, 'Y': Y})
+        object_points.append(object_points[0])
+        if len(object_points) >= 3:
             object_vectors.append(object_points)
 
-# +------------------------------------/
-# |           REMOVE PHOTO            /
-# +----------------------------------/
+    # +------------------------------------/
+    # |           REMOVE PHOTO            /
+    # +----------------------------------/
     f.delete_image(filename)
     return object_vectors
 
 
-def create_response(img, model):
-    return json.dumps(find_shapes(img, model),indent=2)
+def create_response(img, model, width):
+    return json.dumps(find_shapes(img, model, width), indent=2)
