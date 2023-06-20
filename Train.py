@@ -107,55 +107,61 @@ model.summary()
 #|            LOAD IMAGES            /
 #+----------------------------------/
 
-image_path = f'{os.environ.get("IMAGE_PATH")}'
-mask_path = f'{os.environ.get("MASK_PATH")}'
+for idx in range(1, int(os.environ.get("IMAGE_FOLDERS_COUNT"))+1):
 
-image_names = sorted(next(os.walk(image_path))[-1])
-mask_names = sorted(next(os.walk(mask_path))[-1])
+  if int(os.environ.get("IMAGE_FOLDERS_COUNT")) == 1:
+    image_path = f'{os.environ.get("IMAGE_PATH")}/{os.environ.get("IMAGE_PATH")}'
+    mask_path = f'{os.environ.get("MASK_PATH")}/{os.environ.get("IMAGE_PATH")}'
+  else:
+    image_path = f'{os.environ.get("IMAGE_PATH")}/{os.environ.get("IMAGE_PATH")}_{str(idx)}'
+    mask_path = f'{os.environ.get("MASK_PATH")}/{os.environ.get("IMAGE_PATH")}_{str(idx)}'
 
-#+------------------------------------/
-#|         CONVERT IMAGES            /
-#+----------------------------------/
+  image_names = sorted(next(os.walk(image_path))[-1])
+  mask_names = sorted(next(os.walk(mask_path))[-1])
 
-images = np.zeros(shape=(len(image_names), SIZE, SIZE, 3))
-masks = np.zeros(shape=(len(image_names), SIZE, SIZE, 1))
+  #+------------------------------------/
+  #|         CONVERT IMAGES            /
+  #+----------------------------------/
 
-for id in tqdm(range(len(image_names)), desc="Images"):
-  path = image_path + image_names[id]
-  img = np.asarray(Image.open(path)).astype('float')/255.
-  img = cv.resize(img, (SIZE, SIZE), cv.INTER_AREA)
-  images[id] = img
+  images = np.zeros(shape=(len(image_names), SIZE, SIZE, 3))
+  masks = np.zeros(shape=(len(image_names), SIZE, SIZE, 1))
 
-for id in tqdm(range(len(mask_names)), desc="Mask"):
-  path = mask_path + mask_names[id]
-  mask = np.asarray(Image.open(path).convert("L")).astype('float')/255.
-  mask = cv.resize(mask, (SIZE, SIZE), cv.INTER_AREA)
-  mask = np.expand_dims(mask, axis=-1)
-  masks[id] = mask
+  for id in tqdm(range(len(image_names)), desc="Images"):
+    path = image_path + image_names[id]
+    img = np.asarray(Image.open(path)).astype('float')/255.
+    img = cv.resize(img, (SIZE, SIZE), cv.INTER_AREA)
+    images[id] = img
 
-#+------------------------------------/
-#|          VERIFY IMAGES            /
-#+----------------------------------/
+  for id in tqdm(range(len(mask_names)), desc="Mask"):
+    path = mask_path + mask_names[id]
+    mask = np.asarray(Image.open(path).convert("L")).astype('float')/255.
+    mask = cv.resize(mask, (SIZE, SIZE), cv.INTER_AREA)
+    mask = np.expand_dims(mask, axis=-1)
+    masks[id] = mask
 
-f.verify_images(images, masks)
+  #+------------------------------------/
+  #|          VERIFY IMAGES            /
+  #+----------------------------------/
 
-#+------------------------------------/
-#|           IMAGE SPLIT             /
-#+----------------------------------/
+  f.verify_images(images, masks)
 
-images_train, images_test, mask_train, mask_test = train_test_split(images, masks, test_size=0.25)
+  #+------------------------------------/
+  #|           IMAGE SPLIT             /
+  #+----------------------------------/
 
-#+------------------------------------/
-#|        TRAIN CONFIGURATION        /
-#+----------------------------------/
+  images_train, images_test, mask_train, mask_test = train_test_split(images, masks, test_size=0.25)
 
-epochs = int(os.environ.get("EPOCH_SIZE"))
-batch_size = int(os.environ.get("BATCH_SIZE"))
+  #+------------------------------------/
+  #|        TRAIN CONFIGURATION        /
+  #+----------------------------------/
 
-history = model.fit(images_train, mask_train,
-                    validation_data=[images_test, mask_test], 
-                    epochs=epochs,
-                    batch_size=batch_size)
+  epochs = int(os.environ.get("EPOCH_SIZE"))
+  batch_size = int(os.environ.get("BATCH_SIZE"))
+
+  history = model.fit(images_train, mask_train,
+                      validation_data=[images_test, mask_test], 
+                      epochs=epochs,
+                      batch_size=batch_size)
 
 
 predictions = model.predict(images_test)
