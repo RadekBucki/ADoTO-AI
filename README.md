@@ -137,7 +137,8 @@ The neural network architecture was based on:
 
 ### Images dataset
 
-During upload...
+Dataset was mostly prepared by us using images downloaded from `geoportal.gov.pl`. Each object has prepared around 1000 photos.
+[Google Drive with Datasets](https://drive.google.com/drive/folders/1Z-9dsvDqO_iDyi6dHUKkNgShgGFi-sTD?usp=sharing)
 
 ## Project launch
 
