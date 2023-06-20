@@ -60,7 +60,7 @@ python3 --version
 - *(If you don't have)* install venv:
 ```bash
 sudo apt update
-sudo apt install python3.10-venv1
+sudo apt install python3.10-venv
 ```
 - Create and active venv:
 ```bash
