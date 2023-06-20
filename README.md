@@ -52,7 +52,7 @@ The `config.file` is initially (for demonstration) completed.
 
 #### Below are the steps to configure project for Ubuntu 22.04:
 
-- Verify your python version:
+- Verify your Python version:
 
 ```bash
 python3 --version
@@ -67,7 +67,7 @@ sudo apt install python3.10-venv1
 python3 -m venv [your_venv_name] 
 source [your_venv_name]/bin/activate
 ```
-- Clone github project to created venv.
+- Clone Github project into created venv.
 
 - Install packages from `requirements.txt`:
 ```bash
