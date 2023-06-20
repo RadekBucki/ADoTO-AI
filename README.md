@@ -41,7 +41,7 @@ If you want to run program, configure the `config.file`. Below is a table with s
 
 The `config.file` is initially (for demonstration) completed.
 
-### Software requirements:
+### Software requirements
 
 - **Operating system:** `Ubuntu/Debian/Arch` - reason here: [Ended support of tensorflow tool for Windows](https://discuss.tensorflow.org/t/2-10-last-version-to-support-native-windows-gpu/12404)
 
@@ -76,7 +76,7 @@ pip3 install requirements.txt
 - Venv with project is ready to use.
 
 
-### Hardware requirements:
+### Hardware requirements
 
 #### To predict:
 - **CPU:** not verified
@@ -118,7 +118,7 @@ MASK_FOLDER_NAME=masks
 IMAGE_FOLDERS_COUNT=3
 ```
 
-### Model datasets:
+### Model datasets
 Dataset files have their specific names and are located in the `Datasets` folder by default. The file must start with the prefix `dataset_` and then the model name e.g. `forest`. Datasets are saved by default with the `.h5` extension. 
 
 **Examples:**
