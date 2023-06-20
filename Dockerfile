@@ -1,8 +1,12 @@
 
 FROM python:3.10-slim-bullseye
+
 RUN mkdir -p prediction-module
+
 WORKDIR prediction-module
+
 COPY requirements.txt requirements.txt
+
 RUN pip3 install -r requirements.txt
 
 COPY . .
