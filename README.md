@@ -185,4 +185,3 @@ python3 Train.py
 ```bash
 python3 Predict.py
 ```
-
